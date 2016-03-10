@@ -1,0 +1,30 @@
+{
+  "name": "coffeegrind",
+  "version": "0.1.0",
+  "description": "Lightweight time-keeping app with git integration",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coffeegrind/coffeegrind.git"
+  },
+  "keywords": [
+    "time",
+    "tracking",
+    "keeping",
+    "app",
+    "cross",
+    "platform",
+    "mac",
+    "linux",
+    "windows"
+  ],
+  "author": "Zach Cawthorne, Nick Aversano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coffeegrind/coffeegrind/issues"
+  },
+  "homepage": "https://github.com/coffeegrind/coffeegrind#readme"
+}
