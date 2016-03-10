@@ -4,6 +4,7 @@
   "description": "Lightweight time-keeping app with git integration",
   "main": "main.js",
   "scripts": {
+    "start": "electron main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/coffeegrind/coffeegrind/issues"
   },
-  "homepage": "https://github.com/coffeegrind/coffeegrind#readme"
+  "homepage": "https://github.com/coffeegrind/coffeegrind#readme",
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.10"
+  }
 }

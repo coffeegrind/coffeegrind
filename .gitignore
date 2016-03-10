@@ -1,3 +1,5 @@
+node_modules
+
 # tmp files
 *.swp
 .DS_Store
