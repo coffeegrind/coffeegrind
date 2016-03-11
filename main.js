@@ -12,6 +12,8 @@ const IdleDetector = require('./lib/idle');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+console.log(__dirname);
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600});
