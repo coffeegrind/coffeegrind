@@ -6,6 +6,8 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
+const IdleDetector = require('./lib/idle');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -26,6 +28,14 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+  });
+
+  var idleDetector = new IdleDetector(-1);
+  idleDetector.on('suspend', (t) => {
+    console.log('idle - suspend: ' + t);
+  });
+  idleDetector.on('resume', (t) => {
+    console.log('idle - resume: ' + t);
   });
 }
 
