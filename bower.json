@@ -1,0 +1,34 @@
+{
+  "name": "coffeegrind",
+  "description": "Lightweight time-keeping app with git integration",
+  "main": "main.js",
+  "authors": [
+    "Zach Cawthorne",
+    "Nick Aversano"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "time",
+    "tracking",
+    "keeping",
+    "app",
+    "cross",
+    "platform",
+    "mac",
+    "linux",
+    "windows"
+  ],
+  "homepage": "https://github.com/coffeegrind/coffeegrind",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "photon": "^0.1.2-alpha"
+  }
+}

@@ -1,6 +1,7 @@
 node_modules
 npm-debug.log
 build
+bower_components
 
 # tmp files
 *.swp

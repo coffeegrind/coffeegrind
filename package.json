@@ -30,7 +30,14 @@
   },
   "homepage": "https://github.com/coffeegrind/coffeegrind#readme",
   "devDependencies": {
-    "electron-prebuilt": "^0.36.10"
+    "electron-prebuilt": "^0.36.10",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-util": "^3.0.7",
+    "gutil": "^1.6.4"
   },
   "dependencies": {
     "bindings": "^1.2.1",
