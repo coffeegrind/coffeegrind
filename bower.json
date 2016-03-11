@@ -29,6 +29,7 @@
     "tests"
   ],
   "dependencies": {
-    "photon": "^0.1.2-alpha"
+    "photon": "^0.1.2-alpha",
+    "jquery": "^2.2.1"
   }
 }

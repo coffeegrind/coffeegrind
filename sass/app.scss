@@ -1,1 +1,15 @@
 @import "bower_components/photon/sass/photon";
+
+body {
+  
+}
+
+li.active {
+  background: blue;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
