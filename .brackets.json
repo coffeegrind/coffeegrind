@@ -4,14 +4,14 @@
         "sass/app.scss": {
             "sass.enabled": true,
             "sass.options": {
-                "includePaths": [
-                ],
+                "includePaths": [],
                 "outputDir": "../public/css",
                 "imagePath": null,
                 "sourceComments": false,
                 "outputStyle": "nested"
             },
-            "linting.collapsed": true
+            "linting.collapsed": true,
+            "brackets-git.gitPath": "git"
         }
     },
     "themes.theme": "rain.monokai-dark-soda",

@@ -1,15 +1,22 @@
 @import "bower_components/photon/sass/photon";
 
+// base styles
 body {
-  
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-li.active {
-  background: blue;
+li {
+  cursor: pointer;
 }
 
 footer {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+// other stuff
+.time {
+  font-weight: bold;
 }
