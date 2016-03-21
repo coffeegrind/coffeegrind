@@ -6,13 +6,16 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
+const globalShortcut = electron.globalShortcut;
+
 const IdleDetector = require('./lib/idle');
+
+// debugging
+require('electron-reload')(__dirname);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-
-console.log(__dirname);
 
 function createWindow () {
   // Create the browser window.
@@ -30,6 +33,23 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+  });
+  
+  // key command to show/hide window
+  var success = globalShortcut.register('ctrl+x', () => {
+    if (mainWindow.isFocused()) mainWindow.hide();
+    else mainWindow.show();
+  });
+  if (!success) console.log('could not register key command');
+  
+  // key commmand to start/stop timer
+  var success = globalShortcut.register('ctrl+shift+x', () => {
+    console.log('hello!');
+  });
+  
+  app.on('will-quit', () => {
+    // remove all keyboard shortcuts
+    globalShortcut.unregisterAll();
   });
 
   var idleDetector = new IdleDetector(5000);
@@ -59,5 +79,8 @@ app.on('activate', function () {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
     createWindow();
+  }
+  else {
+    mainWindow.show();
   }
 });
