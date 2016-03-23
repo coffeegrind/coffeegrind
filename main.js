@@ -8,6 +8,8 @@ const BrowserWindow = electron.BrowserWindow;
 
 const globalShortcut = electron.globalShortcut;
 
+const storage = require('node-persist');
+
 const IdleDetector = require('./lib/idle');
 
 // debugging
@@ -19,7 +21,7 @@ let mainWindow;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow({width: 800, height: 480});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/public/index.html');

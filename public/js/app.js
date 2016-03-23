@@ -28,8 +28,8 @@ document.addEventListener('dragover', preventDrag, false);
   
   // on-page keyboard shortcuts
   var Keyboard = require('./js/keyboard');
-  Keyboard.focusable(create, 'Meta+C', 'Meta+C');
-  Keyboard.focusable(create, 'Meta+N', 'Meta+N');
+  Keyboard.focusable(create_input, 'Meta+C', 'Meta+C');
+  Keyboard.focusable(create_input, 'Meta+N', 'Meta+N');
   
   // number keys 1-9 focus elements in list
   for (var i=1; i < 10; i++) {
@@ -38,16 +38,17 @@ document.addEventListener('dragover', preventDrag, false);
         var len = $('ul li').length;
         var index = (n - 1 > len - 1 ? len - 1 : n - 1);
         if (index == 8) index = -1;
-        $('ul li:nth(' + index + ')').click();
+        var $el = $('ul li:nth(' + index + ')');
+        $el.click();
+        $(document.activeElement).blur();
       });
     })(i);
   }
   
-  $(create).keypress(function(e) {
-    // did we press enter?
-    if (e.which != 13) return;
-    
-    console.log($(this).val());
+  $(create).submit(function(e) {
+    console.log($(this).find('input').val());
+    e.preventDefault();
+    return false;
   });
 })(jQuery);
 

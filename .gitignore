@@ -3,6 +3,7 @@ npm-debug.log
 build
 bower_components/
 css
+persist
 
 # tmp files
 *.swp
