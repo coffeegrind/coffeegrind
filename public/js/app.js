@@ -141,6 +141,13 @@ menu.append(new MenuItem({
     alert('Deleted')
   }
 }))
+menu.append(new MenuItem({
+  label: 'Add Home Directory',
+  click: function() {
+    const dialog require('electron').dialog;
+    console.log(dialog.showOpenDialog({properties: ['openDirectory']}));
+  }
+}))
 
 // Add the listener
 document.addEventListener('DOMContentLoaded', function () {
