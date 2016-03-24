@@ -8,6 +8,15 @@ body {
 
 li {
   cursor: pointer;
+  
+  &.record .time {
+    @extend .icon;
+    @extend .icon-record;
+    
+    &:before {
+      padding-right: 4px;
+    }
+  }
 }
 
 footer {
@@ -19,4 +28,27 @@ footer {
 // other stuff
 .time {
   font-weight: bold;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+form {
+  position: relative;
+  button {
+    position: absolute;
+    right:0;
+    top:0;
+    bottom: 0;
+    
+    &.btn .icon {
+      color: white;
+      cursor: pointer;
+    }
+  }
+  
+  input.form-control {
+    padding-right: 2em;
+  }
 }
