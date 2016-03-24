@@ -45,6 +45,7 @@ document.addEventListener('dragover', preventDrag, false);
     })(i);
   }
   
+  // submit form
   $(create).submit(function(e) {
     console.log($(this).find('input').val());
     e.preventDefault();
@@ -56,6 +57,19 @@ document.addEventListener('dragover', preventDrag, false);
 var remote = require('remote')
 var Menu = remote.require('menu')
 var MenuItem = remote.require('menu-item')
+
+// saving/loading projects
+const storage = remote.require('node-persist');
+const ProjectController = remote.require('./lib/controller');
+storage.initSync({dir: __dirname + '/../persist/projects'});
+const controller = new ProjectController(storage);
+
+var $projects = $(projects);
+controller.getProjects().forEach(function(e, i) {
+  // check for valid projects
+  if (!e.name) return;
+  $projects.append($('<li class="list-group-item"><strong>' + e.name + '</strong><span class="time pull-right">' + e.getHumanTime() + '</span><p>Lorem ipsum dolor sit amet.</p></li>'));
+});
 
 // Build our new menu
 var menu = new Menu()

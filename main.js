@@ -8,12 +8,7 @@ const BrowserWindow = electron.BrowserWindow;
 
 const globalShortcut = electron.globalShortcut;
 
-const storage = require('node-persist');
-
 const IdleDetector = require('./lib/idle');
-
-// debugging
-require('electron-reload')(__dirname);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
