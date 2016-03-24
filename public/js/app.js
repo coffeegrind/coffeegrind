@@ -25,6 +25,11 @@ document.addEventListener('dragover', preventDrag, false);
       if ($curr.length > 0) {
         $('ul li').removeClass('record');
         $curr.toggleClass('record', controller.toggle($curr.data('project')));
+        
+        if ($curr.hasClass('record')) {
+          $curr.parent().prepend($curr);
+          $curr.click();
+        }
         e.preventDefault();
         return false;
       }
@@ -107,8 +112,7 @@ var MenuItem = remote.require('menu-item')
 // saving/loading projects
 const storage = remote.require('node-persist');
 const ProjectController = remote.require('./lib/controller');
-storage.initSync({dir: __dirname + '/../persist/projects'});
-const controller = new ProjectController(storage);
+const controller = ProjectController.getInstance();
 
 var $projects = $(projects);
 controller.getProjects().forEach(function(e, i) {
@@ -152,7 +156,11 @@ menu.append(new MenuItem({
 menu.append(new MenuItem({
   label: 'Delete',
   click: function() {
-    alert('Deleted ' + menuTarget)
+    var project = $(menuTarget).data('project');
+    if (confirm('Really delete ' + project.name + '?')) {
+      controller.delete(project);
+      $(menuTarget).remove();
+    }
   }
 }))
 menu.append(new MenuItem({

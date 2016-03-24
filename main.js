@@ -10,6 +10,12 @@ const globalShortcut = electron.globalShortcut;
 
 const IdleDetector = require('./lib/idle');
 
+// create shared project controller
+const storage = require('node-persist');
+storage.initSync({dir: __dirname + '/persist/projects'});
+const ProjectController = require('./lib/controller');
+const controller = ProjectController.getInstance(storage);
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -47,14 +53,19 @@ function createWindow () {
   app.on('will-quit', () => {
     // remove all keyboard shortcuts
     globalShortcut.unregisterAll();
+    
+    // stop active timer
+    controller.stop();
   });
 
   var idleDetector = new IdleDetector(5000);
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
+    controller.stop();
   });
   idleDetector.on('resume', (t) => {
     console.log('idle - resume: ' + t);
+    controller.start();
   });
 }
 
