@@ -23,7 +23,8 @@ document.addEventListener('dragover', preventDrag, false);
     if (e.which == 32 || e.which == 13) {
       var $curr = $('li.active');
       if ($curr.length > 0) {
-        $curr.toggleClass('record', controller.toggle());
+        $('ul li').removeClass('record');
+        $curr.toggleClass('record', controller.toggle($curr.data('project')));
         e.preventDefault();
         return false;
       }
@@ -50,7 +51,7 @@ document.addEventListener('dragover', preventDrag, false);
   
   // poll for updates
   setInterval(function() {
-    var $curr = $('li.active');
+    var $curr = $('li.record');
     if (!$curr.length > 0 || !controller.activeProject) return;
     $curr.find('.time').text(controller.activeProject.getHumanTime());
   }, 500);
@@ -78,9 +79,8 @@ document.addEventListener('dragover', preventDrag, false);
   $(create).submit(function(e) {
     var $input = $(this).find('input');
     var val = $input.val();
-    controller.use(val);
     
-    var $newLi = createProjectView(controller.activeProject);
+    var $newLi = createProjectView(controller.use(val));
     
     // check for existing element
     var $existing = $projects.find('li[data-id="' + $newLi.attr('data-id') + '"]');
@@ -118,6 +118,8 @@ controller.getProjects().forEach(function(e, i) {
 // creates a single project time li
 function createProjectView(project) {
   var $el = $('<li class="list-group-item" data-id="' + project.name + '"><strong>' + project.name + '</strong><span class="time pull-right">' + project.getHumanTime() + '</span></li>');
+  
+  $el.data('project', project);
   
   // blue highlights
   $el.click(function(e) {
