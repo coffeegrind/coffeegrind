@@ -22,7 +22,11 @@ document.addEventListener('dragover', preventDrag, false);
     // space or enter to start stop the active project
     if (e.which == 32 || e.which == 13) {
       var $curr = $('li.active');
-      if ($curr) $curr.toggleClass('record', controller.toggle());
+      if ($curr.length > 0) {
+        $curr.toggleClass('record', controller.toggle());
+        e.preventDefault();
+        return false;
+      }
     }
     else if (e.which == Keyboard.keys.UP) {
       var $parent = $('ul');
@@ -47,7 +51,7 @@ document.addEventListener('dragover', preventDrag, false);
   // poll for updates
   setInterval(function() {
     var $curr = $('li.active');
-    if (!$curr || !controller.activeProject) return;
+    if (!$curr.length > 0 || !controller.activeProject) return;
     $curr.find('.time').text(controller.activeProject.getHumanTime());
   }, 500);
   
@@ -77,9 +81,18 @@ document.addEventListener('dragover', preventDrag, false);
     controller.use(val);
     
     var $newLi = createProjectView(controller.activeProject);
+    
+    // check for existing element
+    var $existing = $projects.find('li[data-id="' + $newLi.attr('data-id') + '"]');
+    if ($existing.length > 0) {
+      $newLi = $existing;
+    }
+    
+    // add new element
     $projects.prepend($newLi);
     $newLi.click();
     
+    // clear input
     $input.val('').blur();
     
     e.preventDefault();
@@ -108,9 +121,8 @@ function createProjectView(project) {
   
   // blue highlights
   $el.click(function(e) {
-    var $this = $curr = $(this);
+    var $this = $(this);
     $this.addClass('active');
-    controller.use($this.attr('data-id'));
     $this.siblings().each(function(i, e){
       $(e).removeClass('active');
     });
@@ -144,7 +156,7 @@ menu.append(new MenuItem({
 menu.append(new MenuItem({
   label: 'Add Home Directory',
   click: function() {
-    const dialog require('electron').dialog;
+    const dialog = remote.require('electron').dialog;
     console.log(dialog.showOpenDialog({properties: ['openDirectory']}));
   }
 }))

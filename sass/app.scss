@@ -17,6 +17,11 @@ li {
       padding-right: 4px;
     }
   }
+  
+  /*&.active {
+    @extend .icon;
+    @extend .icon-play;
+  }*/
 }
 
 footer {
