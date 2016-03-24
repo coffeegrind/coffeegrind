@@ -8,11 +8,8 @@ document.addEventListener('drop', preventDrag, false);
 document.addEventListener('dragenter', preventDrag, false);
 document.addEventListener('dragover', preventDrag, false);
 
-var $curr = false;
-
-function init() {
+(function init() {
   $('input').focus(function(e) {
-    $curr = false;
     $('ul li').removeClass('active');
   });
   
@@ -23,10 +20,10 @@ function init() {
       return false;
     }*/
     // space or enter to start stop the active project
-    if ($curr && (e.which == 32 || e.which == 13)) {
-      $curr.toggleClass('record', controller.toggle());
+    if (e.which == 32 || e.which == 13) {
+      var $curr = $('li.active');
+      if ($curr) $curr.toggleClass('record', controller.toggle());
     }
-    
     else if (e.which == Keyboard.keys.UP) {
       var $parent = $('ul');
       var active = $parent.find('.active').removeClass('active');
@@ -34,8 +31,7 @@ function init() {
       if (!prev || !prev.length) {
         prev = active.siblings(':last');
       }
-      prev.addClass('active');
-      //$parent.scrollTop(prev.offset().top);
+      prev.click();
     }
     else if (e.which == Keyboard.keys.DOWN) {
       var $parent = $('ul');
@@ -44,14 +40,14 @@ function init() {
       if (!next || !next.length) {
         next = active.siblings(':first');
       }
-      next.addClass('active');
-      //$parent.scrollTop(next.offset().top + next.height());
+      next.click();
     }
   });
   
   // poll for updates
   setInterval(function() {
-    if (!$curr) return;
+    var $curr = $('li.active');
+    if (!$curr || !controller.activeProject) return;
     $curr.find('.time').text(controller.activeProject.getHumanTime());
   }, 500);
   
@@ -65,10 +61,8 @@ function init() {
     (function(n) {
       Keyboard.on(create, 'Meta+' + n, function() {
         var len = $('ul li').length;
-        console.log(n);
         var index = (n - 1 > len - 1 ? len - 1 : n - 1);
         if (index == 8) index = -1;
-        console.log(index);
         var $el = $('ul li:nth(' + index + ')');
         $el.click();
         $(document.activeElement).blur();
@@ -76,7 +70,7 @@ function init() {
     })(i);
   }
   
-  // submit form
+  // submit create project form
   $(create).submit(function(e) {
     var $input = $(this).find('input');
     var val = $input.val();
@@ -91,7 +85,7 @@ function init() {
     e.preventDefault();
     return false;
   });
-}
+})();
 
 var remote = require('remote')
 var Menu = remote.require('menu')
@@ -108,8 +102,6 @@ controller.getProjects().forEach(function(e, i) {
   $projects.append(createProjectView(e));
 });
 
-init();
-
 // creates a single project time li
 function createProjectView(project) {
   var $el = $('<li class="list-group-item" data-id="' + project.name + '"><strong>' + project.name + '</strong><span class="time pull-right">' + project.getHumanTime() + '</span></li>');
@@ -122,11 +114,19 @@ function createProjectView(project) {
     $this.siblings().each(function(i, e){
       $(e).removeClass('active');
     });
+    
+    // scroll to make sure element stays visible
+    var $container = $this.parent().parent();
+    var top = $this.offset().top;
+    if (top > $container.height() || top < 0) {
+      $container.scrollTop(top);
+    }
   });
   
   return $el;
 }
 
+var menuTarget;
 // Build our new menu
 var menu = new Menu()
 menu.append(new MenuItem({
@@ -138,7 +138,7 @@ menu.append(new MenuItem({
 menu.append(new MenuItem({
   label: 'Delete',
   click: function() {
-    alert('Deleted')
+    alert('Deleted ' + menuTarget)
   }
 }))
 menu.append(new MenuItem({
@@ -152,6 +152,7 @@ menu.append(new MenuItem({
 // Add the listener
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.js-context-menu').addEventListener('contextmenu', function (event) {
+    menuTarget = event.target;
     menu.popup(remote.getCurrentWindow());
   })
 })
