@@ -8,18 +8,9 @@ document.addEventListener('drop', preventDrag, false);
 document.addEventListener('dragenter', preventDrag, false);
 document.addEventListener('dragover', preventDrag, false);
 
+var $curr = false;
+
 function init() {
-  var $curr = false;
-  // blue highlights
-  $('ul li').click(function(e) {
-    var $this = $curr = $(this);
-    $this.addClass('active');
-    controller.use($this.attr('data-id'));
-    $this.siblings().each(function(i, e){
-      $(e).removeClass('active');
-    });
-  });
-  
   $('input').focus(function(e) {
     $curr = false;
     $('ul li').removeClass('active');
@@ -34,6 +25,27 @@ function init() {
     // space or enter to start stop the active project
     if ($curr && (e.which == 32 || e.which == 13)) {
       $curr.toggleClass('record', controller.toggle());
+    }
+    
+    else if (e.which == Keyboard.keys.UP) {
+      var $parent = $('ul');
+      var active = $parent.find('.active').removeClass('active');
+      var prev = active.prev();
+      if (!prev || !prev.length) {
+        prev = active.siblings(':last');
+      }
+      prev.addClass('active');
+      //$parent.scrollTop(prev.offset().top);
+    }
+    else if (e.which == Keyboard.keys.DOWN) {
+      var $parent = $('ul');
+      var active = $parent.find('.active').removeClass('active');
+      var next = active.next();
+      if (!next || !next.length) {
+        next = active.siblings(':first');
+      }
+      next.addClass('active');
+      //$parent.scrollTop(next.offset().top + next.height());
     }
   });
   
@@ -53,8 +65,10 @@ function init() {
     (function(n) {
       Keyboard.on(create, 'Meta+' + n, function() {
         var len = $('ul li').length;
+        console.log(n);
         var index = (n - 1 > len - 1 ? len - 1 : n - 1);
         if (index == 8) index = -1;
+        console.log(index);
         var $el = $('ul li:nth(' + index + ')');
         $el.click();
         $(document.activeElement).blur();
@@ -67,9 +81,8 @@ function init() {
     var $input = $(this).find('input');
     var val = $input.val();
     controller.use(val);
-    var p = controller.activeProject;
     
-    var $newLi = $('<li class="list-group-item" data-id="' + p.name + '"><strong>' + p.name + '</strong><span class="time pull-right">' + p.getHumanTime() + '</span></li>');
+    var $newLi = createProjectView(controller.activeProject);
     $projects.prepend($newLi);
     $newLi.click();
     
@@ -92,10 +105,27 @@ const controller = new ProjectController(storage);
 
 var $projects = $(projects);
 controller.getProjects().forEach(function(e, i) {
-  $projects.append($('<li class="list-group-item" data-id="' + e.name + '"><strong>' + e.name + '</strong><span class="time pull-right">' + e.getHumanTime() + '</span></li>'));
+  $projects.append(createProjectView(e));
 });
 
 init();
+
+// creates a single project time li
+function createProjectView(project) {
+  var $el = $('<li class="list-group-item" data-id="' + project.name + '"><strong>' + project.name + '</strong><span class="time pull-right">' + project.getHumanTime() + '</span></li>');
+  
+  // blue highlights
+  $el.click(function(e) {
+    var $this = $curr = $(this);
+    $this.addClass('active');
+    controller.use($this.attr('data-id'));
+    $this.siblings().each(function(i, e){
+      $(e).removeClass('active');
+    });
+  });
+  
+  return $el;
+}
 
 // Build our new menu
 var menu = new Menu()

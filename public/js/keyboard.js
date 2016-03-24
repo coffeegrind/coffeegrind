@@ -19,6 +19,8 @@ var Keyboard = (function() {
     DOWN: 40
   };
   
+  Keyboard.keys = keys;
+  
   /**
    * Represents a key + some modifier(s)
    * TODO: add ability to listen for key combinations (think: vim)

@@ -6,20 +6,25 @@
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
-    <header class="toolbar toolbar-header">
-      <h1 class="title">Create Project</h1>
-      <form id="create">
-        <button class="btn btn-primary pull-right"><i class="icon icon-plus"></i></button>
-        <input id="create_input" class="form-control" type="text" placeholder="My Awesome Project">
-      </form>
-    </header>
-    <ul id="projects" class="list-group js-context-menu">
+  <div class="pane-group">
+    <div class="pane sidebar">
+      <ul class="list-group">
+      <div class="list-group-header">
+        <form id="create">
+          <button class="btn btn-primary pull-right"><i class="icon icon-plus"></i></button>
+          <input id="create_input" class="form-control" type="text" placeholder="Create a new project">
+        </form>
+      </div>
+    </ul>
+    <ul id="projects" class="projects list-group js-context-menu">
       <!--<li class="list-group-item">
         <strong>List item title</strong>
         <span class="time pull-right">00:00</span>
         <p>Lorem ipsum dolor sit amet.</p>
       </li>-->
     </ul>
+    </div>
+  </div>
     <!-- debug --><script src="js/jquery.min.js"></script>
     <script>window.$ = window.jQuery = require('./js/jquery.min');</script>
     <script src="js/app.js"></script>
