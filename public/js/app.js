@@ -125,9 +125,24 @@ function createProjectView(project) {
   
   $el.data('project', project);
   
-  // blue highlights
   $el.click(function(e) {
     var $this = $(this);
+    
+    // double clicking
+    var lastClicked = $this.data('lastClicked');
+    var now = new Date();
+    if (lastClicked) {
+      var DOUBLE_CLICK_TIME = 500;
+      if (now.getTime() - lastClicked.getTime() < DOUBLE_CLICK_TIME) {
+        $this.data('lastClicked', false);
+        console.log('hey! you clicked me twice');
+      }
+    }
+    else {
+      $this.data('lastClicked', now);
+    }
+    
+    // highlight me
     $this.addClass('active');
     $this.siblings().each(function(i, e){
       $(e).removeClass('active');
@@ -150,21 +165,24 @@ var menu = new Menu()
 menu.append(new MenuItem({
   label: 'More Info...',
   click: function() {
-    alert('Here is more information')
+    var project = $(menuTarget).data('project');
+    alert(project.name + 
+          '\nDate Created: ' + formatTime(project.dateCreated) +
+          '\nProject Directory: ' + project.directory);
   }
 }))
 menu.append(new MenuItem({
   label: 'Delete',
   click: function() {
     var project = $(menuTarget).data('project');
-    if (confirm('Really delete ' + project.name + '?')) {
+    if (confirm('Really delete ' + project.name + '? \nThis action cannnot be undone.')) {
       controller.delete(project);
       $(menuTarget).remove();
     }
   }
 }))
 menu.append(new MenuItem({
-  label: 'Add Home Directory',
+  label: 'Set Project Directory',
   click: function() {
     const dialog = remote.require('electron').dialog;
     console.log(dialog.showOpenDialog({properties: ['openDirectory']}));
@@ -178,3 +196,19 @@ document.addEventListener('DOMContentLoaded', function () {
     menu.popup(remote.getCurrentWindow());
   })
 })
+
+var monthNames = [
+  "January", "February", "March",
+  "April", "May", "June", "July",
+  "August", "September", "October",
+  "November", "December"
+];
+
+function formatTime(time) {
+  var date = new Date(time);
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+  
+  return monthNames[monthIndex] + ' ' + day + ' ' + year;
+}

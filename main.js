@@ -8,6 +8,9 @@ const BrowserWindow = electron.BrowserWindow;
 
 const globalShortcut = electron.globalShortcut;
 
+const Menu = electron.Menu;
+const Tray = electron.Tray;
+
 const IdleDetector = require('./lib/idle');
 
 // create shared project controller
@@ -19,10 +22,36 @@ const controller = ProjectController.getInstance(storage);
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+var tray = null;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 480});
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 480,
+    'min-width': 264,
+    'min-height': 120,
+    //icon: '',
+  });
+  
+  // tray icon
+  tray = new Tray('./images/TrayIcon.png');
+  var contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio', checked: true },
+    { label: 'Item4', type: 'radio' },
+  ]);
+  tray.setToolTip('This is my application.');
+  tray.setContextMenu(contextMenu);
+  
+  controller.on('start', () => {
+    tray.setImage('./images/TrayIconActive.png');
+  });
+  
+  controller.on('stop', () => {
+    tray.setImage('./images/TrayIcon.png');
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/public/index.html');
