@@ -199,7 +199,11 @@ menu.append(new MenuItem({
   label: 'Set Project Directory',
   click: function() {
     const dialog = remote.require('electron').dialog;
-    console.log(dialog.showOpenDialog({properties: ['openDirectory']}));
+    var project = controller._load($(menuTarget).attr("data-id"));
+
+    project.setProjectDirectory(dialog.showOpenDialog({properties: ['openDirectory']}));
+   
+    controller.save(project);
   }
 }))
 
