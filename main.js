@@ -29,21 +29,23 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 480,
-    'min-width': 264,
+    'min-width': 240,
     'min-height': 120,
     //icon: '',
   });
   
-  // tray icon
-  tray = new Tray('./images/TrayIcon.png');
-  var contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' },
-  ]);
-  tray.setToolTip('This is my application.');
-  tray.setContextMenu(contextMenu);
+  if (!tray) {
+    // tray icon
+    tray = new Tray('./images/TrayIcon.png');
+    var contextMenu = Menu.buildFromTemplate([
+      { label: 'Item1', type: 'radio' },
+      { label: 'Item2', type: 'radio' },
+      { label: 'Item3', type: 'radio', checked: true },
+      { label: 'Item4', type: 'radio' },
+    ]);
+    tray.setToolTip('CoffeeGrind');
+    tray.setContextMenu(contextMenu);
+  }
   
   controller.on('start', () => {
     tray.setImage('./images/TrayIconActive.png');
@@ -76,7 +78,7 @@ function createWindow () {
   
   // key commmand to start/stop timer
   var success = globalShortcut.register('ctrl+shift+x', () => {
-    console.log('hello!');
+    controller.toggle();
   });
   
   app.on('will-quit', () => {

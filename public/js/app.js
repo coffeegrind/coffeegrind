@@ -26,6 +26,7 @@ document.addEventListener('dragover', preventDrag, false);
         $('ul li').removeClass('record');
         $curr.toggleClass('record', controller.toggle($curr.data('project')));
         
+        // move to top
         if ($curr.hasClass('record')) {
           $curr.parent().prepend($curr);
           $curr.click();
@@ -119,9 +120,20 @@ controller.getProjects().forEach(function(e, i) {
   $projects.append(createProjectView(e));
 });
 
+// listen for server events
+controller.on('start', function(project) {
+  var $el = $projects.find('li[data-id="' + project.id +'"]');
+  $el.addClass('record');
+});
+
+controller.on('stop', function(project) {
+  var $el = $projects.find('li[data-id="' + project.id +'"]');
+  $el.removeClass('record');
+})
+
 // creates a single project time li
 function createProjectView(project) {
-  var $el = $('<li class="list-group-item" data-id="' + project.name + '"><strong>' + project.name + '</strong><span class="time pull-right">' + project.getHumanTime() + '</span></li>');
+  var $el = $('<li class="list-group-item" data-id="' + project.id + '"><strong>' + project.name + '</strong><span class="time pull-right">' + project.getHumanTime() + '</span></li>');
   
   $el.data('project', project);
   
@@ -129,17 +141,19 @@ function createProjectView(project) {
     var $this = $(this);
     
     // double clicking
-    var lastClicked = $this.data('lastClicked');
-    var now = new Date();
-    if (lastClicked) {
-      var DOUBLE_CLICK_TIME = 500;
-      if (now.getTime() - lastClicked.getTime() < DOUBLE_CLICK_TIME) {
-        $this.data('lastClicked', false);
-        console.log('hey! you clicked me twice');
+    if (e.originalEvent) {
+      var lastClicked = $this.data('lastClicked');
+      var now = new Date();
+      if (lastClicked) {
+        var DOUBLE_CLICK_TIME = 600;
+        if (now.getTime() - lastClicked.getTime() < DOUBLE_CLICK_TIME) {
+          $this.data('lastClicked', false);
+          console.log('hey! you clicked me twice');
+        }
       }
-    }
-    else {
-      $this.data('lastClicked', now);
+      else {
+        $this.data('lastClicked', now);
+      }
     }
     
     // highlight me
