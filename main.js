@@ -95,8 +95,9 @@ function createWindow () {
     controller.stop();
   });
   idleDetector.on('resume', (t) => {
+    // only resume the timer if the user has the timer running
     console.log('idle - resume: ' + t);
-    controller.start();
+    if (controller.userState) controller.start();
   });
 }
 

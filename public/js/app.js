@@ -86,7 +86,12 @@ document.addEventListener('dragover', preventDrag, false);
     var $input = $(this).find('input');
     var val = $input.val();
     
-    var $newLi = createProjectView(controller.use(val));
+    var project = controller.use(val);
+    if (!project) {
+      e.preventDefault();
+      return false;
+    }
+    var $newLi = createProjectView(project);
     
     // check for existing element
     var $existing = $projects.find('li[data-id="' + $newLi.attr('data-id') + '"]');
@@ -174,36 +179,46 @@ function createProjectView(project) {
 }
 
 var menuTarget;
+var menuProject;
 // Build our new menu
 var menu = new Menu()
 menu.append(new MenuItem({
   label: 'More Info...',
   click: function() {
-    var project = $(menuTarget).data('project');
+    var project = menuProject;
     alert(project.name + 
           '\nDate Created: ' + formatTime(project.dateCreated) +
-          '\nProject Directory: ' + project.directory);
+          '\nProject Directory: ' + (project.directory ? project.directory : 'Not Set')
+    );
   }
 }))
 menu.append(new MenuItem({
-  label: 'Delete',
+  label: 'Open Project Directory',
   click: function() {
-    var project = $(menuTarget).data('project');
-    if (confirm('Really delete ' + project.name + '? \nThis action cannnot be undone.')) {
-      controller.delete(project);
-      $(menuTarget).remove();
-    }
+    const shell = remote.require('electron').shell;
+    var dir = menuProject.directory;
+    if (dir) shell.showItemInFolder(dir);
+    else alert('Project directory not set.');
   }
 }))
 menu.append(new MenuItem({
   label: 'Set Project Directory',
   click: function() {
     const dialog = remote.require('electron').dialog;
-    var project = controller._load($(menuTarget).attr("data-id"));
-
-    project.setProjectDirectory(dialog.showOpenDialog({properties: ['openDirectory']}));
-   
+    var project = menuProject;
+    var userSelection = dialog.showOpenDialog({properties: ['openDirectory']});
+    project.setProjectDirectory(userSelection[0]);
     controller.save(project);
+  }
+}))
+menu.append(new MenuItem({
+  label: 'Delete',
+  click: function() {
+    var project = menuProject;
+    if (confirm('Really delete ' + project.name + '? \nThis action cannnot be undone.')) {
+      controller.delete(project);
+      $(menuTarget).remove();
+    }
   }
 }))
 
@@ -211,6 +226,7 @@ menu.append(new MenuItem({
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.js-context-menu').addEventListener('contextmenu', function (event) {
     menuTarget = event.target;
+    menuProject = $(menuTarget).data('project');
     menu.popup(remote.getCurrentWindow());
   })
 })

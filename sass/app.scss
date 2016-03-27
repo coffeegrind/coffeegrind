@@ -8,6 +8,11 @@ body {
 
 li {
   cursor: pointer;
+
+  // photon overrides
+  &.list-group-item {
+    font-size: 13px;
+  }
   
   &.record .time {
     @extend .icon;
