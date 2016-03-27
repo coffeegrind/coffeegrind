@@ -44,7 +44,7 @@ footer {
   cursor: pointer;
 }
 
-form {
+.form-inline {
   position: relative;
   button {
     position: absolute;
@@ -70,4 +70,18 @@ form {
 .sidebar {
   min-width: 240px;
   max-width: 240px;
+}
+
+// settings page
+
+.settings {
+  padding: 1em;
+}
+
+.info {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 2em;
 }

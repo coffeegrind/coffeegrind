@@ -7,6 +7,7 @@ persist
 
 # tmp files
 *.swp
+*.swo
 .DS_Store
 .saves
 

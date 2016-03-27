@@ -1,10 +1,15 @@
 # CoffeeGrind
 Lightweight cross-platform time-keeping app with git integration.
 
+## Install
+```
+	npm install && bower install
+```
+
 ## Run the app
 
 ```
-	npm install -g electron
+	npm install -g electron-prebuilt
 	electron .
 ```
 

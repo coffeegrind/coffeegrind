@@ -19,6 +19,8 @@ storage.initSync({dir: __dirname + '/persist/projects'});
 const ProjectController = require('./lib/controller');
 const controller = ProjectController.getInstance(storage);
 
+const appMenu = require('./lib/menu');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -34,6 +36,7 @@ function createWindow () {
     //icon: '',
   });
   
+  // inital app setup
   if (!tray) {
     // tray icon
     tray = new Tray('./images/TrayIcon.png');
@@ -45,6 +48,9 @@ function createWindow () {
     ]);
     tray.setToolTip('CoffeeGrind');
     tray.setContextMenu(contextMenu);
+
+    // menu
+    appMenu.create();
   }
   
   controller.on('start', () => {
@@ -123,4 +129,28 @@ app.on('activate', function () {
   else {
     mainWindow.show();
   }
+});
+
+// settings page
+let settingsWindow = null;
+
+function createSettingsWindow() {
+  settingsWindow = new BrowserWindow({
+    width: 500,
+    height: 320,
+    resizeable: false,
+    maximizable: false,
+    useContentSize: true,
+    fullscreenable: false,
+  });
+
+  settingsWindow.loadURL('file://' + __dirname + '/public/settings.html');
+
+  settingsWindow.on('closed', function() {
+    settingsWindow = null;
+  });
+}
+
+app.on('settings', function() {
+  if (!settingsWindow) createSettingsWindow();
 });

@@ -65,7 +65,7 @@ document.addEventListener('dragover', preventDrag, false);
   // on-page keyboard shortcuts
   var Keyboard = require('./js/keyboard');
   Keyboard.focusable(create_input, 'Meta+C', 'Meta+C');
-  Keyboard.focusable(create_input, 'Meta+N', 'Meta+N');
+  //Keyboard.focusable(create_input, 'Meta+N', 'Meta+N');
   
   // number keys 1-9 focus elements in list
   for (var i=1; i < 10; i++) {
@@ -112,8 +112,14 @@ document.addEventListener('dragover', preventDrag, false);
 })();
 
 var remote = require('remote')
+var app = remote.app;
 var Menu = remote.require('menu')
 var MenuItem = remote.require('menu-item')
+
+// menu events
+app.on('new-project', function(item) {
+  $(create_input).focus();
+});
 
 // saving/loading projects
 const storage = remote.require('node-persist');
