@@ -136,8 +136,8 @@ let settingsWindow = null;
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
-    width: 500,
-    height: 320,
+    width: 640,
+    height: 420,
     resizeable: false,
     maximizable: false,
     useContentSize: true,

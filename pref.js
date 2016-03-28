@@ -13,8 +13,8 @@ let settingsWindow = null;
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
-    width: 500,
-    height: 320,
+    width: 700,
+    height: 520,
     resizeable: false,
     maximizable: false,
     useContentSize: true,
@@ -22,6 +22,8 @@ function createSettingsWindow() {
   });
 
   settingsWindow.loadURL('file://' + __dirname + '/public/settings.html');
+
+  settingsWindow.webContents.openDevTools();
 
   settingsWindow.on('closed', function() {
     settingsWindow = null;

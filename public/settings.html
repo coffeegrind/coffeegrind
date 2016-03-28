@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Preferences</title>
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/animate.min.css">
 </head>
 <body class="settings">
   <form id="settings" onsubmit="return false;">
@@ -12,25 +13,30 @@
       <h4>Idle Detection</h4>
       <p class="info">Auto start and stop the timer after:</p>
       <select name="idleTime" class="form-control">
-      <option value="-1">Sleep Only</option>
-      <option value="60000">1 Minute</option>
-      <option value="120000">2 Minutes</option>
-      <option value="300000">5 Minutes</option>
-      <option value="600000">10 Minutes</option>
+        <option value="-1">Sleep Only</option>
+        <option value="60000">1 Minute</option>
+        <option value="120000">2 Minutes</option>
+        <option value="300000">5 Minutes</option>
+        <option value="600000">10 Minutes</option>
       </select>
     </div>
     
     <div class="shortcuts form-group">
       <h4>Keyboard Shortcuts</h4>
-      <h5>Toggle Window:</h5>
-      <input name="cmdToggleWindow" class="form-control">
-      
-      <h5>Start/Stop Timer:</h5>
-      <input name="cmdTimer" class="form-control">
+      <table>
+        <tr>
+          <td><h5>Toggle Window:</h5></td>
+          <td><input name="cmdWindow" class="form-control"></td>
+        </tr>
+        <tr>
+          <td><h5>Start/Stop Timer:</h5></td>
+          <td><input name="cmdTimer" class="form-control"></td>
+        </tr>
+      </table>
     </div>
     
     <div class="form-actions">
-      <button type="submit" class="btn btn-form btn-default">Cancel</button>
+      <button id="cancel" type="submit" class="btn btn-form btn-default">Cancel</button>
       <button type="submit" class="btn btn-form btn-primary">Save</button>
     </div>
     
