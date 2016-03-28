@@ -15,11 +15,13 @@ const IdleDetector = require('./lib/idle');
 
 // create shared project controller
 const storage = require('node-persist');
-storage.initSync({dir: __dirname + '/persist/projects'});
+const projectStorage = storage.create({dir: __dirname + '/persist/projects'});
+projectStorage.initSync();
 const ProjectController = require('./lib/controller');
-const controller = ProjectController.getInstance(storage);
+const controller = ProjectController.getInstance(projectStorage);
 
 const appMenu = require('./lib/menu');
+const config = require('./lib/config');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -76,14 +78,14 @@ function createWindow () {
   });
   
   // key command to show/hide window
-  var success = globalShortcut.register('ctrl+x', () => {
+  var success = globalShortcut.register(config.cmdWindow, () => {
     if (mainWindow.isFocused()) mainWindow.hide();
     else mainWindow.show();
   });
   if (!success) console.log('could not register key command');
   
   // key commmand to start/stop timer
-  var success = globalShortcut.register('ctrl+shift+x', () => {
+  var success = globalShortcut.register(config.cmdTimer, () => {
     controller.toggle();
   });
   
@@ -95,7 +97,7 @@ function createWindow () {
     controller.stop();
   });
 
-  var idleDetector = new IdleDetector(5000);
+  var idleDetector = new IdleDetector(config.idleTime);
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
     controller.stop();
@@ -136,9 +138,9 @@ let settingsWindow = null;
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
-    width: 640,
-    height: 420,
-    resizeable: false,
+    width: 540,
+    height: 360,
+    resizable: false,
     maximizable: false,
     useContentSize: true,
     fullscreenable: false,
@@ -152,5 +154,6 @@ function createSettingsWindow() {
 }
 
 app.on('settings', function() {
-  if (!settingsWindow) createSettingsWindow();
+  if (settingsWindow === null) createSettingsWindow();
+  else settingsWindow.show();
 });

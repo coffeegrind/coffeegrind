@@ -63,7 +63,7 @@ var MAP = {
 for(k=1;k<25;k++) MAP[111+k] = 'F'+k;
 
 // load current config
-const config = remote.require('./lib/config').getInstance();
+const config = remote.require('./lib/config');
 
 var originals = {};
 config.keys().forEach(function(key) {
