@@ -31,12 +31,15 @@ var tray = null;
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 480,
+    width: 760,
+    height: 400,
     'min-width': 240,
     'min-height': 120,
     //icon: '',
   });
+
+  // load the index.html of the app.
+  mainWindow.loadURL('file://' + __dirname + '/public/index.html');
   
   // inital app setup
   if (!tray) {
@@ -63,9 +66,6 @@ function createWindow () {
     tray.setImage('./images/TrayIcon.png');
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/public/index.html');
-
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
@@ -75,6 +75,18 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+  });
+  
+  app.on('will-quit', () => {
+    // remove all keyboard shortcuts
+    globalShortcut.unregisterAll();
+    
+    // stop active timer
+    controller.stop();
+  });
+
+  app.on('new-project', () => {
+    mainWindow.show();
   });
   
   // key command to show/hide window
@@ -88,16 +100,8 @@ function createWindow () {
   var success = globalShortcut.register(config.cmdTimer, () => {
     controller.toggle();
   });
-  
-  app.on('will-quit', () => {
-    // remove all keyboard shortcuts
-    globalShortcut.unregisterAll();
-    
-    // stop active timer
-    controller.stop();
-  });
 
-  var idleDetector = new IdleDetector(config.idleTime);
+  var idleDetector = new IdleDetector(config.idleTime, 500);
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
     controller.stop();

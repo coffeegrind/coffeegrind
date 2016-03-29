@@ -133,6 +133,7 @@ $(cancel).click(function(e) {
 
 // save user settings
 $(settings).submit(function(e) {
+  window.close();
   e.preventDefault();
   return false;
 });

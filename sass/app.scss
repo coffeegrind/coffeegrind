@@ -86,15 +86,19 @@ footer {
   margin-bottom: 2em;
 }
 
-table h5 {
-  margin: 0;
+table {
+  font-size: 13px;
+  h5 {
+    margin: 0;
+  }
+
+  tr:active {
+    color: $gray-color !important;
+    background-color: transparent !important;
+  }
+
+  td {
+    padding: 0.5em;
+  }
 }
 
-table td {
-  padding: 0.5em;
-}
-
-table tr:active {
-  color: $gray-color !important;
-  background-color: transparent !important;
-}
