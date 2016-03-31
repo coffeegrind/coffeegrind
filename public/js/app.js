@@ -111,15 +111,10 @@ document.addEventListener('dragover', preventDrag, false);
   });
 })();
 
-var remote = require('remote')
-var app = remote.app;
-var Menu = remote.require('menu')
-var MenuItem = remote.require('menu-item')
-
-// menu events
-app.on('new-project', function(item) {
-  $(create_input).focus();
-});
+const remote = require('remote')
+const app = remote.app;
+const Menu = remote.require('menu')
+const MenuItem = remote.require('menu-item')
 
 // saving/loading projects
 const storage = remote.require('node-persist');
@@ -132,15 +127,22 @@ controller.getProjects().forEach(function(e, i) {
 });
 
 // listen for server events
-controller.on('start', function(project) {
+const ipcRenderer = require('electron').ipcRenderer;
+ipcRenderer.on('start', function(event, arg) {
+  var project = controller.activeProject;
   var $el = $projects.find('li[data-id="' + project.id +'"]');
   $el.addClass('record');
 });
 
-controller.on('stop', function(project) {
+ipcRenderer.on('stop', function(event, arg) {
+  var project = controller.activeProject;
   var $el = $projects.find('li[data-id="' + project.id +'"]');
   $el.removeClass('record');
-})
+});
+
+ipcRenderer.on('new-project', function(event, arg) {
+  $(create_input).focus();
+});
 
 // creates a single project time li
 function createProjectView(project) {

@@ -1,5 +1,3 @@
-window.$ = window.jQuery = require('./js/jquery.min');
-
 (function ($) {
   /** Adds classes and removes them after animations complete. */
   $.fn.hotClass = function (classList, callback) {

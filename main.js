@@ -5,13 +5,13 @@ const electron = require('electron');
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-
 const globalShortcut = electron.globalShortcut;
-
 const Menu = electron.Menu;
 const Tray = electron.Tray;
 
 const IdleDetector = require('./lib/idle');
+const appMenu = require('./lib/menu');
+const config = require('./lib/config');
 
 // create shared project controller
 const storage = require('node-persist');
@@ -19,9 +19,6 @@ const projectStorage = storage.create({dir: __dirname + '/persist/projects'});
 projectStorage.initSync();
 const ProjectController = require('./lib/controller');
 const controller = ProjectController.getInstance(projectStorage);
-
-const appMenu = require('./lib/menu');
-const config = require('./lib/config');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -87,6 +84,7 @@ function createWindow () {
 
   app.on('new-project', () => {
     mainWindow.show();
+    mainWindow.webContents.send('new-project');
   });
   
   // key command to show/hide window
@@ -105,11 +103,16 @@ function createWindow () {
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
     controller.stop();
+    mainWindow.webContents.send('stop');
   });
+
   idleDetector.on('resume', (t) => {
     // only resume the timer if the user has the timer running
     console.log('idle - resume: ' + t);
-    if (controller.userState) controller.start();
+    if (controller.userState) {
+      controller.start();
+      mainWindow.webContents.send('start');
+    }
   });
 }
 
