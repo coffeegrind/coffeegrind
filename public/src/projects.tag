@@ -25,6 +25,7 @@
     this.projects = controller.getProjects()
     this.selected = this.projects[0]
     this.current = this.selected
+    opts.trigger('project', this.selected)
     
     // poll for updates
     var poll = setInterval(function() {
@@ -43,6 +44,7 @@
     
     clickProject(e) {
       this.selected = e.item
+      opts.trigger('project', this.selected)
       if (!controller.started) this.useProject(this.selected)
       scrollToVisible($(e.target), 3)
     }

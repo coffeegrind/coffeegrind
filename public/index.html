@@ -6,9 +6,19 @@
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
-    <app></app>
+    <div class="pane-group">
+      <div class="pane pane-sm sidebar">
+        <projects></projects>
+      </div>
+      <div class="pane">
+        <div class="content">
+          <!-- <views></views> -->
+          <list-view></list-view>
+        </div>
+      </div>
+    </div>
     <script>window.$ = window.jQuery = require('./vendor/js/jquery.min');</script>
-    <script src="js/time.js"></script>
+    <script src="js/helpers.js"></script>
     <script>
       // prevent files from being dropped on the window
       function preventDrag(e) {
@@ -19,7 +29,6 @@
       document.addEventListener('dragenter', preventDrag, false);
       document.addEventListener('dragover', preventDrag, false);
     </script>
-    <script type="riot/tag" src="src/app.tag"></script>
     <script type="riot/tag" src="src/list-view.tag"></script>
     <script type="riot/tag" src="src/projects.tag"></script>
     <script src="../bower_components/riot/riot+compiler.min.js"></script>
@@ -28,7 +37,9 @@
       const remote = require('remote')
       const Menu = remote.require('menu')
       const MenuItem = remote.require('menu-item')
-      riot.mount('app')
+      var sharedObservable = riot.observable()
+      riot.mount('projects', sharedObservable)
+      riot.mount('list-view', sharedObservable)
     </script>
   </body>
 </html>

@@ -57,13 +57,6 @@ var yearHash = function(d) {
   return d.getYear();
 };
 
-var windowRanges = [
-  {title: "Daily", group: dayHash, interval: 86400000 },
-  {title: "Weekly", group: weekHash },
-  {title: "Monthly", group: monthHash },
-  {title: "Yearly", group: yearHash },
-];
-
 /** Total time elapsed per window (in ms). */
 function tte(fold_time_ranges, offset) {
   offset = offset || 0;
