@@ -57,10 +57,12 @@ function createWindow () {
   
   controller.on('start', () => {
     tray.setImage('./images/TrayIconActive.png');
+    mainWindow.webContents.send('start');
   });
   
   controller.on('stop', () => {
     tray.setImage('./images/TrayIcon.png');
+    mainWindow.webContents.send('stop');
   });
 
   // Open the DevTools.
@@ -103,16 +105,12 @@ function createWindow () {
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
     controller.stop();
-    mainWindow.webContents.send('stop');
   });
 
   idleDetector.on('resume', (t) => {
     // only resume the timer if the user has the timer running
     console.log('idle - resume: ' + t);
-    if (controller.userState) {
-      controller.start();
-      mainWindow.webContents.send('start');
-    }
+    if (controller.userState) controller.start();
   });
 }
 

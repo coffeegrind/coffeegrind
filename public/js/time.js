@@ -6,6 +6,7 @@
  * Note: won't work for ranges less than 1 day
  */
 function fold_time_ranges(ranges, fn_window, interval_ms) {
+  interval_ms = interval_ms || 86400000;
   return ranges.reduce(function(memo, curr) {
     var prev = memo[memo.length - 1];
     if (!prev) {
@@ -37,15 +38,24 @@ function fold_time_ranges(ranges, fn_window, interval_ms) {
 }
 
 // hashes for different views
-var dayHash = dayHashMasterOfTheNightHash = function(d) { return d.getDay() + d.getMonth() * 10 + d.getYear() * 1000; };
+var dayHash = dayHashMasterOfTheNightHash = function(d) {
+  return d.getDay() + d.getMonth() * 10 + d.getYear() * 1000;
+};
+
 var weekHash = function(d) {
   d.setHours(0,0,0);
   d.setDate(d.getDate()+4-(d.getDay()||7));
   var weekNum = Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
   return weekNum + d.getYear() * 100;
 };
-var monthHash = function(d) { return d.getMonth() + d.getYear() * 100; };
-var yearHash = function(d) { return d.getYear(); };
+
+var monthHash = function(d) {
+  return d.getMonth() + d.getYear() * 100;
+};
+
+var yearHash = function(d) {
+  return d.getYear();
+};
 
 var windowRanges = [
   {title: "Daily", group: dayHash, interval: 86400000 },

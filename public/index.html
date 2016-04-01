@@ -6,36 +6,29 @@
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
-  <div class="pane-group">
-    <div class="pane pane-sm sidebar">
-      <ul class="list-group">
-        <div class="list-group-header">
-          <form id="create" class="form-inline" onsubmit="return false;">
-            <button class="btn btn-primary pull-right"><i class="icon icon-plus"></i></button>
-            <input id="create_input" class="form-control" type="text" placeholder="Create a new project">
-          </form>
-        </div>
-      </ul>
-      <ul id="projects" class="projects list-group js-context-menu">
-        <!--<li class="list-group-item">
-          <strong>List item title</strong>
-          <span class="time pull-right">00:00</span>
-          <p>Lorem ipsum dolor sit amet.</p>
-        </li>-->
-      </ul>
-    </div>
-    <div class="pane content">
-      <select id="range" name="range">
-        <option value="Daily">Daily</option>
-        <option value="Weekly">Weekly</option>
-        <option value="Monthly">Monthly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <div id="vis"></div>
-    </div>
-  </div>
-  <script>window.$ = window.jQuery = require('./vendor/js/jquery.min');</script>
-  <script src="js/time.js"></script>
-  <script src="js/app.js"></script>
-</body>
+    <app></app>
+    <script>window.$ = window.jQuery = require('./vendor/js/jquery.min');</script>
+    <script src="js/time.js"></script>
+    <script>
+      // prevent files from being dropped on the window
+      function preventDrag(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      document.addEventListener('drop', preventDrag, false);
+      document.addEventListener('dragenter', preventDrag, false);
+      document.addEventListener('dragover', preventDrag, false);
+    </script>
+    <script type="riot/tag" src="src/app.tag"></script>
+    <script type="riot/tag" src="src/list-view.tag"></script>
+    <script type="riot/tag" src="src/projects.tag"></script>
+    <script src="../bower_components/riot/riot+compiler.min.js"></script>
+    <script>
+      // bootstrap
+      const remote = require('remote')
+      const Menu = remote.require('menu')
+      const MenuItem = remote.require('menu-item')
+      riot.mount('app')
+    </script>
+  </body>
 </html>

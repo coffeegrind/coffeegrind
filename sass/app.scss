@@ -6,8 +6,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+projects {
+  width: 100%;
+}
+
 li {
   cursor: pointer;
+  
+  /*&:active {
+    background-color: $active-color;
+    color: white;
+  }*/
 
   // photon overrides
   &.list-group-item {
@@ -70,6 +79,7 @@ footer {
 .sidebar {
   min-width: 240px;
   max-width: 240px;
+  overflow-y: scroll; // hackity-doo-dah
 }
 
 // settings page
