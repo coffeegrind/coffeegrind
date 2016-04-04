@@ -8,7 +8,7 @@
     </div>
   </ul>
   <ul class="projects list-group" oncontextmenu={ rightClick }>
-    <li each={ this.projects } class="list-group-item { active: parent.selected.id == this.id } { record: this.record }" onclick={ parent.clickProject }>
+    <li each={ this.projects } class="list-group-item { active: parent.selected.id == this.id } { record: this.record }" onclick={ parent.clickProject } ondblclick={ parent.renameProject }>
       <strong>{ name }</strong>
       <span class="time pull-right">{ time || getHumanTime() }</span>
       <p>{ note }</p>
@@ -50,7 +50,7 @@
     }
     
     clickProjectIndex(index) {
-      var $el = $('ul li:nth(' + index + ')')
+      var $el = $('ul li:nth(' + index + ')', this.root)
       this.clickProject({
         item: this.projects[index],
         target: $el
@@ -112,8 +112,13 @@
       this.update()
     }.bind(this))
     
-    ipcRenderer.on('new-project', function(event, arg) {
+    ipcRenderer.on('project-new', function(event, arg) {
       $('#create_input').focus()
+    }.bind(this))
+    
+    ipcRenderer.on('project-rename', function(event, arg) {
+      var $el = $('ul li.active', this.root);
+      this.renameProject({target: $el})
     }.bind(this))
     
     // on-page keyboard shortcuts
@@ -128,14 +133,12 @@
         this.update()
       }
       else if (e.which == Keyboard.keys.UP) {
-        var index = this.projects.indexOf(this.selected)
-        $('ul li:nth(' + index + ')').removeClass('active')
+        var index = $('ul li.active', this.root).removeClass('active').index()
         if (--index < 0) index = this.projects.length - 1
         this.clickProjectIndex(index).addClass('active')
       }
       else if (e.which == Keyboard.keys.DOWN) {
-        var index = this.projects.indexOf(this.selected)
-        $('ul li:nth(' + index + ')').removeClass('active')
+        var index = $('ul li.active', this.root).removeClass('active').index()
         if (++index > this.projects.length - 1) index = 0
         this.clickProjectIndex(index).addClass('active')
       }
@@ -153,7 +156,7 @@
           if (index == 8) index = len - 1
           
           // manually update the ui #perfmatters
-          $('ul li').removeClass('active')
+          $('ul li', this.root).removeClass('active')
           
           this.clickProjectIndex(index).addClass('active')
           $(document.activeElement).blur()
@@ -210,6 +213,40 @@
       menuTarget = $(e.target)
       menuProject = this.projects[menuTarget.index()]
       menu.popup(remote.getCurrentWindow())
+    }
+    
+    var editing = false
+    renameProject(e) {
+      if (editing) return
+      editing = true
+      var $parent = $(e.target).closest('li')
+      var $editable = $parent.find('strong')
+      var oVal = $editable.text()
+      $parent.addClass('rename')
+      $editable.text('')
+      var self = this
+      
+      $('<input type="text">').val(oVal).appendTo($parent).focus()
+        .css('line-height', $editable.height())
+        .on('focusout keydown', function(e) {
+          if (e.type == 'keydown' && !(e.which == 13 || e.which == 27)) return
+          
+          var $this = $(this)
+          var val = $this.val().trim() || oVal
+          $editable.text(val)
+          $this.remove()
+          $parent.removeClass('rename')
+          editing = false
+          
+          if (val.length > 0) {
+            // rename project
+            var project = self.projects[$parent.index()]
+            project.name = val
+            controller.save(project)
+          }
+          
+          e.stopPropagation()
+        })
     }
   </script>
 </projects>

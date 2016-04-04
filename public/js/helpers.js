@@ -72,10 +72,10 @@ function tte(fold_time_ranges, fn_date, fn_elapsed) {
 }
 
 var monthNames = [
-  "January", "February", "March",
-  "April", "May", "June", "July",
-  "August", "September", "October",
-  "November", "December"
+  'January', 'February', 'March',
+  'April', 'May', 'June', 'July',
+  'August', 'September', 'October',
+  'November', 'December'
 ]
 
 function formatTime(time) {
@@ -97,8 +97,8 @@ function humanTime(ms) {
   x /= 24;
   var days = x;
   
-  return (days >= 1 ? Math.floor(days) + " days " : '') +
-         (hours >= 1 ? Math.floor(hours) + " hours " : '') +
-         (minutes >= 1 ? Math.floor(minutes) + " minutes " : '') +
-         (seconds >= 1 ? Math.floor(seconds) + " seconds" : '');
+  return (days >= 1 ? (~~days) + 'd ' : '') +
+         (hours >= 1 ? (~~hours) + 'h ' : '') +
+         (minutes >= 1 ? (~~minutes) + 'm ' : '') +
+         (seconds >= 1 ? (~~seconds) + 's' : '');
 }

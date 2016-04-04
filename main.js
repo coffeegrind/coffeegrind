@@ -28,7 +28,7 @@ var tray = null;
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 760,
+    width: 680,
     height: 400,
     'min-width': 240,
     'min-height': 120,
@@ -83,11 +83,9 @@ function createWindow () {
     // stop active timer
     controller.stop();
   });
-
-  app.on('new-project', () => {
-    mainWindow.show();
-    mainWindow.webContents.send('new-project');
-  });
+  
+  // attach menu frontend events
+  appMenu.bindWindow(mainWindow, () => { mainWindow = createWindow(); });
   
   // key command to show/hide window
   var success = globalShortcut.register(config.cmdWindow, () => {

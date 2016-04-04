@@ -1,0 +1,36 @@
+/**
+ * Custom scroll bars.
+ */
+.pane {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #ddd;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #666; 
+  }
+}
+
+/*.sidebar {
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: transparent; 
+  }
+  
+  &:hover {
+    &::-webkit-scrollbar-track {
+      background: #ddd;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #666; 
+    }
+  }
+}*/

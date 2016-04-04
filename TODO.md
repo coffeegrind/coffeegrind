@@ -2,10 +2,10 @@
 - get a working version
 - [packaging](https://github.com/stephanepericat/toptal-electron-loki-demo)
 - auto-reload settings without reloading app
-- pretty format list of times
+- nice design
 - notes to time bits
 - graphs of time spent
 - git integration
-- sync with dropbox
 - theme colors
+- sync with dropbox
 - everything else

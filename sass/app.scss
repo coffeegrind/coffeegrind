@@ -1,4 +1,5 @@
 @import "bower_components/photon/sass/photon";
+@import "scroll";
 
 // base styles
 body {
@@ -11,8 +12,6 @@ projects {
 }
 
 .projects li {
-  cursor: pointer;
-  
   /*&:active {
     background-color: $active-color;
     color: white;
@@ -21,6 +20,13 @@ projects {
   // photon overrides
   &.list-group-item {
     font-size: 13px;
+    
+    input {
+      color: white;
+      font-weight: bold;
+      background: transparent;
+      border: 1px solid white;
+    }
   }
   
   &.record .time {
@@ -36,12 +42,6 @@ projects {
     @extend .icon;
     @extend .icon-play;
   }*/
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
 }
 
 // other stuff
@@ -114,4 +114,9 @@ table {
 
 .content {
   padding: 1em;
+  
+  ul {
+    padding: 0;
+    text-align: center;
+  }
 }

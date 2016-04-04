@@ -21,10 +21,10 @@
     this.project = null
     
     this.options = [
-      {title: "Daily", dateFormat: days, groupBy: dayHash },
-      {title: "Weekly", dateFormat: weeks, groupBy: weekHash },
-      {title: "Monthly", dateFormat: months, groupBy: monthHash },
-      {title: "Yearly", dateFormat: years, groupBy: yearHash },
+      {title: 'Daily', dateFormat: days, groupBy: dayHash },
+      {title: 'Weekly', dateFormat: weeks, groupBy: weekHash },
+      {title: 'Monthly', dateFormat: months, groupBy: monthHash },
+      {title: 'Yearly', dateFormat: years, groupBy: yearHash },
     ];
     
     this.view = this.options[0]
@@ -66,15 +66,9 @@
     
     function months(ms) {
       var date = new Date(ms)
-      var thisMonth = monthHash(new Date())
-      //var lastMonth = monthHash(moment().startOf('month').days(-1).toDate())
-      var hash = monthHash(date)
-      if (hash == thisMonth) {
+      if (monthHash(date) == monthHash(new Date())) {
         return 'This Month'
       }
-      /*else if (hash == lastMonth) {
-        return 'Last Month'
-      }*/
       return monthNames[date.getMonth()] + ' ' + date.getFullYear()
     }
     
