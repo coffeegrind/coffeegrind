@@ -1,12 +1,11 @@
 # TODO
 - get a working version
 - [packaging](https://github.com/stephanepericat/toptal-electron-loki-demo)
-- integrate riotjs
 - auto-reload settings without reloading app
-- graphs of time spent
+- pretty format list of times
 - notes to time bits
+- graphs of time spent
 - git integration
 - sync with dropbox
 - theme colors
 - everything else
-

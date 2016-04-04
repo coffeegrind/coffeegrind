@@ -39,14 +39,11 @@ function fold_time_ranges(ranges, fn_window, interval_ms) {
 
 // hashes for different views
 var dayHash = dayHashMasterOfTheNightHash = function(d) {
-  return d.getDay() + d.getMonth() * 10 + d.getYear() * 1000;
+  return d.getDay() + d.getMonth() * 100 + d.getYear() * 1000;
 };
 
 var weekHash = function(d) {
-  d.setHours(0,0,0);
-  d.setDate(d.getDate()+4-(d.getDay()||7));
-  var weekNum = Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
-  return weekNum + d.getYear() * 100;
+  return moment(d).week() + d.getYear() * 100;
 };
 
 var monthHash = function(d) {
@@ -58,19 +55,36 @@ var yearHash = function(d) {
 };
 
 /** Total time elapsed per window (in ms). */
-function tte(fold_time_ranges, offset) {
-  offset = offset || 0;
+function tte(fold_time_ranges, fn_date, fn_elapsed) {
+  fn_date = fn_date || function(e) { return new Date(e); };
+  fn_elapsed = fn_elapsed || function(e) { return e; };
+  
   return fold_time_ranges.map(function(e) {
     var elapsed = e.reduce(function(memo, curr) {
       return (curr.e - curr.s) + memo;
     }, 0);
     
-    //var startTime = ((e[0].s / window_ms) >> 0) * window_ms;
     return {
-      startDate: new Date(e[0].s),
-      elapsedTime: elapsed,
+      startDate: fn_date(e[0].s, e),
+      elapsedTime: fn_elapsed(elapsed),
     };
   });
+}
+
+var monthNames = [
+  "January", "February", "March",
+  "April", "May", "June", "July",
+  "August", "September", "October",
+  "November", "December"
+]
+
+function formatTime(time) {
+  var date = new Date(time)
+  var day = date.getDate()
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return monthNames[monthIndex] + ' ' + day + ' ' + year;
 }
 
 function humanTime(ms) {

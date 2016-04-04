@@ -108,6 +108,7 @@
 
     ipcRenderer.on('stop', function(event, arg) {
       this.current.record = false
+      opts.trigger('project', this.current)
       this.update()
     }.bind(this))
     
@@ -119,10 +120,11 @@
     var Keyboard = require('./js/keyboard');
     
     $(document).keydown(function(e) {
-      // space or enter to start stop the active project
-      if (e.which == 32 || e.which == 13) {
+      // start/stop the active project
+      if (e.which == 13 /* enter */) {
         if (document.activeElement.tagName == 'INPUT') return
         this.current.record = controller.toggle()
+        if (!this.current.record) opts.trigger('project', this.current)
         this.update()
       }
       else if (e.which == Keyboard.keys.UP) {
@@ -137,8 +139,7 @@
         if (++index > this.projects.length - 1) index = 0
         this.clickProjectIndex(index).addClass('active')
       }
-      else if (e.which == 27) {
-        // escape
+      else if (e.which == 27 /* escape */) {
         $(document.activeElement).blur()
       }
     }.bind(this))
@@ -209,22 +210,6 @@
       menuTarget = $(e.target)
       menuProject = this.projects[menuTarget.index()]
       menu.popup(remote.getCurrentWindow())
-    }
-
-    var monthNames = [
-      "January", "February", "March",
-      "April", "May", "June", "July",
-      "August", "September", "October",
-      "November", "December"
-    ]
-
-    function formatTime(time) {
-      var date = new Date(time)
-      var day = date.getDate()
-      var monthIndex = date.getMonth();
-      var year = date.getFullYear();
-
-      return monthNames[monthIndex] + ' ' + day + ' ' + year;
     }
   </script>
 </projects>
