@@ -8,7 +8,7 @@
     </div>
   </ul>
   <ul class="projects list-group" oncontextmenu={ rightClick }>
-    <li each={ this.projects } class="list-group-item { active: parent.selected.id == this.id } { record: this.record }" onclick={ parent.clickProject } ondblclick={ parent.renameProject }>
+    <li each={ this.projects } no-reorder class="list-group-item { active: parent.selected.id == this.id } { record: this.record }" onclick={ parent.clickProject } ondblclick={ parent.renameProject }>
       <strong>{ name }</strong>
       <span class="time pull-right">{ time || getHumanTime() }</span>
       <p>{ note }</p>
@@ -24,8 +24,10 @@
     
     this.projects = controller.getProjects()
     this.selected = this.projects[0]
-    this.current = this.selected
-    opts.trigger('project', this.selected)
+    this.current = false
+    this.on('before-mount', function() {
+      this.clickProject({item: this.selected})
+    })
     
     // poll for updates
     var poll = setInterval(function() {
@@ -46,7 +48,9 @@
       this.selected = e.item
       opts.trigger('project', this.selected)
       if (!controller.started) this.useProject(this.selected)
-      scrollToVisible($(e.target), 3)
+      $('ul li', this.root).removeClass('active')
+      remote.getCurrentWindow().setTitle(this.selected.name + ' — CoffeeGrind')
+      if (e.target) scrollToVisible($(e.target), 3)
     }
     
     clickProjectIndex(index) {
@@ -243,6 +247,7 @@
             var project = self.projects[$parent.index()]
             project.name = val
             controller.save(project)
+            remote.getCurrentWindow().setTitle(self.selected.name + ' — CoffeeGrind')
           }
           
           e.stopPropagation()

@@ -13,9 +13,11 @@ const IdleDetector = require('./lib/idle');
 const appMenu = require('./lib/menu');
 const config = require('./lib/config');
 
+const path = require('path');
+
 // create shared project controller
 const storage = require('node-persist');
-const projectStorage = storage.create({dir: __dirname + '/persist/projects'});
+const projectStorage = storage.create({dir: path.join(__dirname, '/persist/projects')});
 projectStorage.initSync();
 const ProjectController = require('./lib/controller');
 const controller = ProjectController.getInstance(projectStorage);
@@ -23,7 +25,7 @@ const controller = ProjectController.getInstance(projectStorage);
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-var tray = null;
+var tray;
 
 function createWindow () {
   // Create the browser window.

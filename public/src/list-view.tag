@@ -7,7 +7,7 @@
   </select>
   
   <ul>
-    <li each={ times }>
+    <li each={ times } no-reorder>
       <h4>{ startDate }</h4>
       <p>{ elapsedTime }</p>
     </li>
