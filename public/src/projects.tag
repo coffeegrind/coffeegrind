@@ -45,14 +45,20 @@
     })
     
     clickProject(e) {
+      // unselect old project
+      if (this.selected != e.item) {
+        var index = this.projectIndex(this.selected)
+        $('ul li:nth(' + index + ')', this.root).removeClass('active')
+      }
+      
       this.selected = e.item
       opts.trigger('project', this.selected)
       if (!controller.started) this.useProject(this.selected)
-      $('ul li', this.root).removeClass('active')
       remote.getCurrentWindow().setTitle(this.selected.name + ' — CoffeeGrind')
       if (e.target) scrollToVisible($(e.target), 3)
     }
     
+    /** Programatically click a project at the given index. */
     clickProjectIndex(index) {
       var $el = $('ul li:nth(' + index + ')', this.root)
       this.clickProject({
@@ -65,7 +71,6 @@
     createProject(e) {
       var $input = $(e.target).find('input')
       var val = $input.val()
-      
       this.selected = this.useProject(val)
       
       // clear input

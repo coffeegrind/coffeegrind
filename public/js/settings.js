@@ -13,6 +13,7 @@
 }(jQuery));
 
 const remote = require('remote');
+const ipcRenderer = require('electron').ipcRenderer;
 const globalShortcut = remote.globalShortcut;
 setTimeout(function() {
   menu = require('../lib/menu');
@@ -131,6 +132,7 @@ $(cancel).click(function(e) {
 
 // save user settings
 $(settings).submit(function(e) {
+  ipcRenderer.send('reloadConfig');
   window.close();
   e.preventDefault();
   return false;

@@ -1,9 +1,25 @@
+/** jQuery plugins. */
+(function ($) {
+  /** Adds classes and removes them after animations complete. */
+  $.fn.hotClass = function (classList, callback) {
+      this.addClass(classList);
+      var onAnimationEnd = function ($this) {
+          return function (e) {
+              $this.removeClass(classList);
+              if (callback) callback(e);
+          };
+      };
+      this.one('webkitAnimationEnd oAnimationEnd msAnimationEnd animationend', onAnimationEnd(this));
+  };
+}(jQuery));
+
 /**
  * Given an array of time ranges (in ms), folds them into windows basd on fn_window.
  * ranges - an array of objects with s and e (start and end times). See project TimeBit
  * fn_window - the hashing function to sort the times into buckets
  * interval_ms - the amount of time between ranges (used to split ranges when they overlap).
  * Note: won't work for ranges less than 1 day
+ * TODO: fix non-consecutive ranges greater than fn_window
  */
 function fold_time_ranges(ranges, fn_window, interval_ms) {
   interval_ms = interval_ms || 86400000;

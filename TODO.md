@@ -3,7 +3,6 @@
 
 ## Core
 - [packaging](https://github.com/stephanepericat/toptal-electron-loki-demo)
-- auto-reload settings without reloading app
 - settings page in main window
 - nice design + icons
 

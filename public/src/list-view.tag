@@ -1,5 +1,5 @@
 <list-view>
-  <select onchange={ select }>
+  <select onchange={ select } class="form-control">
     <option value="0">Daily</option>
     <option value="1">Weekly</option>
     <option value="2">Monthly</option>

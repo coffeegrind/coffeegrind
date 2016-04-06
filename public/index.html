@@ -32,15 +32,21 @@
     </script>
     <script type="riot/tag" src="src/list-view.tag"></script>
     <script type="riot/tag" src="src/projects.tag"></script>
+    <script type="riot/tag" src="src/settings.tag"></script>
     <script src="../bower_components/riot/riot+compiler.min.js"></script>
     <script>
       // bootstrap
       const remote = require('remote')
+      const ipcRenderer = require('electron').ipcRenderer;
       const Menu = remote.require('menu')
       const MenuItem = remote.require('menu-item')
+      
       var sharedObservable = riot.observable()
       riot.mount('projects', sharedObservable)
       riot.mount('list-view', sharedObservable)
+      
+      /*$('body').append('<settings></settings>')
+      riot.mount('settings')*/
     </script>
   </body>
 </html>

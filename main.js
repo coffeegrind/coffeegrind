@@ -12,6 +12,7 @@ const Tray = electron.Tray;
 const IdleDetector = require('./lib/idle');
 const appMenu = require('./lib/menu');
 const config = require('./lib/config');
+const ipcMain = electron.ipcMain; 
 
 const path = require('path');
 
@@ -26,6 +27,7 @@ const controller = ProjectController.getInstance(projectStorage);
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 var tray;
+var idleDetector;
 
 function createWindow () {
   // Create the browser window.
@@ -34,6 +36,7 @@ function createWindow () {
     height: 400,
     'min-width': 240,
     'min-height': 120,
+    'titleBarStyle': 'hidden',
     //icon: '',
   });
 
@@ -88,20 +91,8 @@ function createWindow () {
   
   // attach menu frontend events
   appMenu.bindWindow(mainWindow, () => { mainWindow = createWindow(); });
-  
-  // key command to show/hide window
-  var success = globalShortcut.register(config.cmdWindow, () => {
-    if (mainWindow.isFocused()) mainWindow.hide();
-    else mainWindow.show();
-  });
-  if (!success) console.log('could not register key command');
-  
-  // key commmand to start/stop timer
-  var success = globalShortcut.register(config.cmdTimer, () => {
-    controller.toggle();
-  });
 
-  var idleDetector = new IdleDetector(config.idleTime, 500);
+  idleDetector = new IdleDetector(config.idleTime, 500);
   idleDetector.on('suspend', (t) => {
     console.log('idle - suspend: ' + t);
     controller.stop();
@@ -112,7 +103,34 @@ function createWindow () {
     console.log('idle - resume: ' + t);
     if (controller.userState) controller.start();
   });
+  
+  bindUserConfig();
 }
+
+/** (Re)attaches user-configured handlers. */
+function bindUserConfig() {
+  // unregister all keyboard shortcuts
+  globalShortcut.unregisterAll();
+  
+  // set key command to show/hide window
+  var success = globalShortcut.register(config.cmdWindow, () => {
+    if (mainWindow.isFocused()) mainWindow.hide();
+    else mainWindow.show();
+  });
+  if (!success) console.log('could not register key command cmdWindow');
+  
+  // set key commmand to start/stop timer
+  var success = globalShortcut.register(config.cmdTimer, () => {
+    controller.toggle();
+  });
+  if (!success) console.log('could not register key command cmdTimer');
+  
+  // update idle time
+  idleDetector.setIdleTime(config.idleTime);
+}
+
+// reload settings when user saves them
+ipcMain.on('reloadConfig', bindUserConfig);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
