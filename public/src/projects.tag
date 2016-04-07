@@ -3,7 +3,7 @@
     <div class="list-group-header">
       <form id="create" class="form-inline" onsubmit={ createProject }>
         <button class="btn btn-primary pull-right"><i class="icon icon-plus"></i></button>
-        <input id="create_input" class="form-control" type="text" placeholder="Create a new project">
+        <input id="create_input" onfocus={ inputFocus } class="form-control" type="text" placeholder="Create a new project">
       </form>
     </div>
   </ul>
@@ -109,7 +109,6 @@
     }
     
     // listen for server events
-    const ipcRenderer = require('electron').ipcRenderer
     ipcRenderer.on('start', function(event, arg) {
       this.current.record = true
       this.update()
@@ -131,7 +130,6 @@
     }.bind(this))
     
     // on-page keyboard shortcuts
-    var Keyboard = require('./js/keyboard');
     
     $(document).keydown(function(e) {
       // start/stop the active project
@@ -142,11 +140,13 @@
         this.update()
       }
       else if (e.which == Keyboard.keys.UP) {
+        if (document.activeElement.tagName == 'INPUT') return
         var index = $('ul li.active', this.root).removeClass('active').index()
         if (--index < 0) index = this.projects.length - 1
         this.clickProjectIndex(index).addClass('active')
       }
       else if (e.which == Keyboard.keys.DOWN) {
+        if (document.activeElement.tagName == 'INPUT') return
         var index = $('ul li.active', this.root).removeClass('active').index()
         if (++index > this.projects.length - 1) index = 0
         this.clickProjectIndex(index).addClass('active')
@@ -171,6 +171,10 @@
           $(document.activeElement).blur()
         }.bind(this))
       }.bind(this))(i)
+    }
+    
+    inputFocus(e) {
+      this.selected = false
     }
     
     // right-click menu

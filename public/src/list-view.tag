@@ -48,6 +48,9 @@
     }
     
     function days(ms) {
+      if (moment().startOf('week').isBefore(ms)) {
+        return moment(ms).calendar().split('at')[0].split('Last').pop().trim()
+      }
       return moment(ms).calendar().split('at')[0].trim()
     }
     

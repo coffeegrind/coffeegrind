@@ -11,6 +11,20 @@
       };
       this.one('webkitAnimationEnd oAnimationEnd msAnimationEnd animationend', onAnimationEnd(this));
   };
+  
+  /**
+   * Ensures this event gets called first.
+   * Use e.stopImmediatePropagation() to prevent the event from bubbling to other listeners.
+   */
+  $.fn.onFirst = function(eventName, callback) {
+    $(this).on(eventName, function(e) {
+      callback(e);
+    });
+    
+    var eventNoNamespace = eventName.split('.')[0];
+    var eventList = $._data($(this)[0], 'events');
+    eventList[eventNoNamespace].unshift(eventList[eventNoNamespace].pop());
+  };
 }(jQuery));
 
 /**

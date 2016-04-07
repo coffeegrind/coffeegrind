@@ -3,12 +3,15 @@
 
 ## Core
 - [packaging](https://github.com/stephanepericat/toptal-electron-loki-demo)
-- settings page in main window
 - nice design + icons
+- notes to time bits
 
 ## Features
-- notes to time bits
 - auto start/stop timer based on user's activity
+  - title of the active window
+  - modified files
+  - by application
+  - OS level
 - click to copy
 - add/subtract time to project
 - overworking detection

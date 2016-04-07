@@ -20,11 +20,11 @@
       <table>
         <tr>
           <td>Toggle Window:</td>
-          <td><input onkeydown={ keydown } name="cmdWindow" class="form-control"></td>
+          <td><input onkeydown={ keydown } onblur={ blur } name="cmdWindow" class="form-control"></td>
         </tr>
         <tr>
           <td>Start/Stop Timer:</td>
-          <td><input onkeydown={ keydown } name="cmdTimer" class="form-control"></td>
+          <td><input onkeydown={ keydown } onblur={ blur } name="cmdTimer" class="form-control"></td>
         </tr>
       </table>
     </div>
@@ -41,10 +41,6 @@
      * Settings page.
      */
     const globalShortcut = remote.globalShortcut
-    var menu
-    setTimeout(function() {
-      menu = require('../lib/menu')
-    }, 0)
 
     var IS_MAC = remote.process.platform === 'darwin'
     var CMD_OR_CTRL = IS_MAC ? '\u2318' : '\u2303'
@@ -93,12 +89,33 @@
     var originals = {}
     
     this.on('mount', function() {
+      setTimeout(function(){$(this.root).addClass('active')}.bind(this), 0)
+      
       config.keys().forEach(function(key) {
         var val = config.get(key)
         originals[key] = val
-        if (key.indexOf('cmd') == 0) val = formatAccelerator(val)
-        $('[name="' + key + '"]').val(val)
+        var $el = $('[name="' + key + '"]')
+        if (key.indexOf('cmd') == 0) {
+          $el.attr('data-cmd', val)
+          val = formatAccelerator(val)
+        }
+        $el.val(val)
       })
+      
+      $(document).onFirst('keydown.settings', function(e) {
+        if (e.which == 27 /* esc */) {
+          if (document.activeElement.tagName == 'INPUT') return
+          this.cancel()
+        }
+        else if (e.which == 13 /* enter */) {
+          this.submit()
+          e.stopImmediatePropagation()
+        }
+      }.bind(this))
+    })
+    
+    this.on('before-unmount', function() {
+      $(document).off('keydown.settings')
     })
 
     /**
@@ -107,7 +124,6 @@
      */
     keydown(e) {
       var $this = $(e.target, this.root)
-      console.log($this)
 
       var key = MAP[e.which] || String.fromCharCode(e.which)
       var save = true
@@ -118,6 +134,9 @@
         key = ''
         save = false
       }
+      
+      // allow inputs to be tabbed over
+      if (!e.metaKey && !e.ctrlKey && !e.altKey && e.which == 9 /* tab */) return true
 
       var cmdStr = (e.ctrlKey ? 'Ctrl+' : '') +
                    (e.altKey ? 'Alt+' : '') +
@@ -140,27 +159,41 @@
         }
       }
 
-      return false
+      e.stopPropagation()
+    }
+    
+    blur(e) {
+      var $this = $(e.target, this.root)
+      var oldCmd = $this.attr('data-cmd')
+      $this.val( formatAccelerator(oldCmd) )
     }
 
     change(e) {
       var $this = $(e.target, this.root)
       config.set($this.attr('name'), $this.val())
     }
+    
+    /** Like unmount, but waits for the animation to complete. */
+    close() {
+      $(this.root).removeClass('active')
+      setTimeout(function() {
+        this.unmount()
+      }.bind(this), 100)
+    }
 
-    cancel(e) {
+    cancel() {
       // restore original values
       config.keys().forEach(function(key) {
         config.set(key, originals[key])
       })
 
-      this.unmount()
+      this.close()
     }
 
     // save user settings
-    submit(e) {
+    submit() {
       ipcRenderer.send('reloadConfig')
-      this.unmount()
+      this.close()
     }
 
   </script>

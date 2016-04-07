@@ -13,10 +13,12 @@ var Keyboard = (function() {
   var keys = {
     FORWARD_SLASH: 191,
     ESCAPE: 27,
+    ESC: 27,
     LEFT: 37,
     RIGHT: 39,
     UP: 38,
-    DOWN: 40
+    DOWN: 40,
+    ENTER: 13,
   };
   
   Keyboard.keys = keys;
@@ -37,6 +39,17 @@ var Keyboard = (function() {
       } 
       
       return (e.which == this.code);
+    };
+    
+    /** returns the jQuery event for this Cmd. */
+    this.event = function() {
+      var e = {};
+      e.which = this.code;
+      for (var i=0,n=this.modifiers.length; i<n; i++) {
+        e[this.modifiers[i]] = true;
+      }
+      console.log(e)
+      return $.Event('keydown', e);
     };
   };
   
@@ -93,10 +106,37 @@ var Keyboard = (function() {
   
   // jQuery plugin
   (function($) {
-    $.fn.focusable = function(focusKey, blurKey) {
+    $.fn.keyFocusable = function(focusKey, blurKey) {
       Keyboard.focusable(this, focusKey, blurKey);
     };
+    
+    $.fn.remapKeys = function(keymap) {
+      Keyboard.remap(this, keymap);
+    };
   })(jQuery);
+  
+  /**
+   * Given a map of Cmd : jQuery Event, triggers the event when Cmd is detected.
+   */
+  Keyboard.remap = function(selector, keymap) {
+    // convert to map to commands
+    keymap = Object.keys(keymap).map(function(key){
+      var e = keymap[key];
+      e = typeof e === 'string' ? Cmd.parse(e) : e;
+      var event = typeof e === 'object' ? e : $.Event('keydown', {which: e});
+      return [Cmd.parse(key), event];
+    });
+    
+    $(selector).keydown(function(e) {
+      for (var i=0,n=keymap.length; i<n; i++) {
+        var map = keymap[i];
+        var cmd = map[0];
+        var event = map[1];
+        
+        if (cmd.isPressed(e)) $(this).trigger(event);
+      }
+    })
+  };
   
   /**
    * Remaps Ctrl+HJKL to vim-styled simulated arrow keys.

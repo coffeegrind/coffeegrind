@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>CoffeeGrind</title>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/animate.min.css">
   </head>
   <body>
     <div class="pane-group">
@@ -40,13 +41,23 @@
       const ipcRenderer = require('electron').ipcRenderer;
       const Menu = remote.require('menu')
       const MenuItem = remote.require('menu-item')
+      const Keyboard = require('./js/keyboard')
       
       var sharedObservable = riot.observable()
       riot.mount('projects', sharedObservable)
       riot.mount('list-view', sharedObservable)
       
-      /*$('body').append('<settings></settings>')
-      riot.mount('settings')*/
+      ipcRenderer.on('settings', function() {
+        if ($('settings').length > 0) return
+        $('body').append('<settings></settings>')
+        riot.mount('settings')
+      })
+      
+      Keyboard.remap(document, {
+        'Ctrl+C': Keyboard.keys.ESC,
+        'J': Keyboard.keys.DOWN,
+        'K': Keyboard.keys.UP,
+      })
     </script>
   </body>
 </html>

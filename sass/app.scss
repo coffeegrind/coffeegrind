@@ -90,19 +90,31 @@ settings {
   left:0;
   width:100%;
   height:100%;
+  background: rgba(0,0,0,0);
+  transition: all .1s;
+  
+  &.active {
+    .settings {
+      transform: translateY(0%);
+    }
+    background: rgba(0,0,0,0.25);
+  }
 }
 
 .settings {
+  transition: all .1s;
+  transform: translateY(-100%);
   padding: 1em;
   background: #fff;
-}
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  
+  .info {
+    margin-top: 0;
+  }
 
-.info {
-  margin-top: 0;
-}
-
-.form-group {
-  margin-bottom: 2em;
+  .form-group {
+    margin-bottom: 2em;
+  }
 }
 
 table {
