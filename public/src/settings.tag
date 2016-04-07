@@ -30,8 +30,8 @@
     </div>
     
     <div class="form-actions">
-      <button onclick={ cancel } type="submit" class="btn btn-form btn-default">Cancel</button>
-      <button type="submit" class="btn btn-form btn-primary">Save</button>
+      <input onclick={ cancel } type="submit" class="btn btn-form btn-default" value="Cancel" />
+      <input type="submit" class="btn btn-form btn-primary" value="Save" />
     </div>
     
   </form>
@@ -112,6 +112,9 @@
           e.stopImmediatePropagation()
         }
       }.bind(this))
+      
+      this.title = remote.getCurrentWindow().getTitle()
+      remote.getCurrentWindow().setTitle('Settings')
     })
     
     this.on('before-unmount', function() {
@@ -176,6 +179,7 @@
     /** Like unmount, but waits for the animation to complete. */
     close() {
       $(this.root).removeClass('active')
+      remote.getCurrentWindow().setTitle(this.title)
       setTimeout(function() {
         this.unmount()
       }.bind(this), 100)

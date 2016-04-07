@@ -38,6 +38,7 @@
       if (!this.project) return
       
       var ranges = fold_time_ranges(this.project.timeBits, this.view.groupBy)
+      console.log(g = ranges)
       var times = tte(ranges, this.view.dateFormat, humanTime)
       this.times = times.reverse()
     }.bind(this))

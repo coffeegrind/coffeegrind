@@ -19,6 +19,7 @@ var Keyboard = (function() {
     UP: 38,
     DOWN: 40,
     ENTER: 13,
+    DELETE: 46,
   };
   
   Keyboard.keys = keys;

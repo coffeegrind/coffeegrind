@@ -17,7 +17,7 @@
 - overworking detection
 - graph view
 - calendar view
-- view total time spent on all projects
+- [view total time spent on all projects](https://jqueryui.com/selectable/)
 - git integration (ORIG_HEAD is commit hash, COMMIT_EDITMSG)
 - 100 hours of timing
 - theme colors

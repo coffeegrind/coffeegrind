@@ -43,6 +43,7 @@
       const MenuItem = remote.require('menu-item')
       const Keyboard = require('./js/keyboard')
       
+      // components
       var sharedObservable = riot.observable()
       riot.mount('projects', sharedObservable)
       riot.mount('list-view', sharedObservable)
@@ -53,10 +54,17 @@
         riot.mount('settings')
       })
       
+      // key bindings
       Keyboard.remap(document, {
         'Ctrl+C': Keyboard.keys.ESC,
         'J': Keyboard.keys.DOWN,
         'K': Keyboard.keys.UP,
+      })
+      
+      $(document).keydown(function(e) {
+        if (e.which == 27 /* escape */) {
+          $(document.activeElement).blur()
+        }
       })
     </script>
   </body>

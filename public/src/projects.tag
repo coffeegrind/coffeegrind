@@ -31,7 +31,7 @@
     
     // poll for updates
     var poll = setInterval(function() {
-      if (!controller.started) return
+      if (!controller.started || !remote.getCurrentWindow().isFocused()) return
       
       var time = controller.activeProject.getHumanTime()
       if (this.current.time != time) {
@@ -72,6 +72,7 @@
       var $input = $(e.target).find('input')
       var val = $input.val()
       this.selected = this.useProject(val)
+      remote.getCurrentWindow().setTitle(this.selected.name + ' — CoffeeGrind')
       
       // clear input
       $input.val('').blur()
@@ -132,27 +133,25 @@
     // on-page keyboard shortcuts
     
     $(document).keydown(function(e) {
+      if (document.activeElement.tagName == 'INPUT') return
+      
       // start/stop the active project
       if (e.which == 13 /* enter */) {
-        if (document.activeElement.tagName == 'INPUT') return
         this.current.record = controller.toggle()
-        if (!this.current.record) opts.trigger('project', this.current)
         this.update()
       }
-      else if (e.which == Keyboard.keys.UP) {
-        if (document.activeElement.tagName == 'INPUT') return
+      else if (e.which == 38 /* up */) {
         var index = $('ul li.active', this.root).removeClass('active').index()
         if (--index < 0) index = this.projects.length - 1
         this.clickProjectIndex(index).addClass('active')
       }
-      else if (e.which == Keyboard.keys.DOWN) {
-        if (document.activeElement.tagName == 'INPUT') return
+      else if (e.which == 40 /* down */) {
         var index = $('ul li.active', this.root).removeClass('active').index()
         if (++index > this.projects.length - 1) index = 0
         this.clickProjectIndex(index).addClass('active')
       }
-      else if (e.which == 27 /* escape */) {
-        $(document.activeElement).blur()
+      else if (e.which == 46 /* delete */ || e.which == 8 /* backspace */) {
+        this.deleteProject(this.selected)
       }
     }.bind(this))
 
@@ -182,16 +181,6 @@
     var menuProject
     var menu = new Menu()
     menu.append(new MenuItem({
-      label: 'More Info...',
-      click: function() {
-        var project = menuProject
-        alert(project.name + 
-              '\nDate Created: ' + formatTime(project.dateCreated) +
-              '\nProject Directory: ' + (project.directory ? project.directory : 'Not Set')
-        )
-      }
-    }))
-    menu.append(new MenuItem({
       label: 'Open Project Directory',
       click: function() {
         const shell = remote.require('electron').shell
@@ -211,16 +200,44 @@
       }
     }))
     menu.append(new MenuItem({
-      label: 'Delete',
+      label: 'Rename F2',
+      click: function() {
+        this.renameProject({target: menuTarget})
+      }.bind(this)
+    }))
+    /*menu.append(new MenuItem({
+      label: 'Archive',
       click: function() {
         var project = menuProject
-        if (confirm('Really delete ' + project.name + '? \nThis action cannnot be undone.')) {
-          controller.delete(project)
-          // TODO: remove from projects?
-          menuTarget.remove()
-        }
+      }
+    }))*/
+    menu.append(new MenuItem({
+      label: 'Delete ⌫',
+      click: function() {
+        this.deleteProject(menuProject)
+      }.bind(this)
+    }))
+    menu.append(new MenuItem({
+      label: 'More Info...',
+      click: function() {
+        var project = menuProject
+        alert(project.name + 
+              '\nDate Created: ' + formatTime(project.dateCreated) +
+              '\nDate Modified: ' + formatTime(project.dateModified) +
+              '\nProject Directory: ' + (project.directory ? project.directory : 'Not Set')
+        )
       }
     }))
+    
+    deleteProject(project) {
+      if (!project) return
+      
+      if (confirm('Really delete ' + project.name + '? \nThis action cannnot be undone.')) {
+        controller.delete(project)
+        // TODO: remove from projects?
+        menuTarget.remove()
+      }
+    }
     
     rightClick(e) {
       menuTarget = $(e.target)
@@ -230,15 +247,17 @@
     
     var editing = false
     renameProject(e) {
-      if (editing) return
-      editing = true
       var $parent = $(e.target).closest('li')
       var $editable = $parent.find('strong')
+      
+      if (editing || $parent.length == 0) return
+      
+      editing = true
       var oVal = $editable.text()
       $parent.addClass('rename')
       $editable.text('')
-      var self = this
       
+      var self = this
       $('<input type="text">').val(oVal).appendTo($parent).focus()
         .css('line-height', $editable.height())
         .on('focusout keydown', function(e) {
