@@ -1,6 +1,9 @@
 # CoffeeGrind
 Lightweight cross-platform time-keeping app with git integration.
 
+## Note
+This is a placeholder repo for issues and the Beta wiki.
+
 ## Install
 ```
 	npm install && bower install
@@ -14,5 +17,3 @@ Lightweight cross-platform time-keeping app with git integration.
 ```
 
 See [quick start](http://electron.atom.io/docs/v0.36.8/tutorial/quick-start/) for more info.
-
-Made with Zest by Zach & Nick
